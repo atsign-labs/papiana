@@ -2,7 +2,3 @@
 ///
 /// More dartdocs go here.
 library papiana;
-
-export 'src/papiana_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
