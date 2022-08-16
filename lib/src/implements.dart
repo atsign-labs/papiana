@@ -4,7 +4,7 @@ import 'package:analyzer/src/dart/element/inheritance_manager3.dart';
 import 'package:papiana/src/models.dart';
 
 extension Implements on ClassElement {
-  ImplementationResult implementsClass(ClassElement other, {bool publicOnly = true}) {
+  ImplementationResult implementsClass(ClassElement other, {bool publicOnly = true, bool strict = true}) {
     List<InterfaceConflict> conflicts = [];
 
     Map<Name, ExecutableElement> otherInterface = InheritanceManager3().getInterface(other).map;
@@ -46,7 +46,8 @@ extension Implements on ClassElement {
         }
 
         var actualParam = matchingParams.single;
-        if (expectedParam.isOptional && actualParam.isRequired) {
+        // If strict mode is false, accept @required annotations -> required keyword change
+        if (expectedParam.isOptional && actualParam.isRequired && (strict || !(expectedParam.hasRequired))) {
           conflicts.add(OptionalToRequiredParameterConflict(elementName.name));
         }
         if (expectedParam.isNamed != actualParam.isNamed) {
