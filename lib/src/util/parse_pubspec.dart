@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:papiana/src/exceptions.dart';
-import 'package:papiana/src/util/build_path.dart';
+import 'package:papiana/src/models/exceptions.dart';
+import 'package:papiana/src/util/path_util.dart';
 import 'package:pana/pana.dart';
 
 const _fileName = 'pubspec.yaml';

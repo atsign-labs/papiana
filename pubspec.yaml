@@ -1,6 +1,6 @@
 name: papiana
 description: A starting point for Dart libraries or applications.
-version: 1.0.0
+version: 1.0.0-dev.1.0
 # homepage: https://www.example.com
 
 environment:
@@ -13,6 +13,7 @@ dependencies:
   http: ^0.13.5
   pana: ^0.21.15
   path: ^1.8.2
+  pub_cache: ^0.3.1
   safe_url_check: ^1.1.0
   tar: ^0.5.5+1
 

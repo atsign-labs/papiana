@@ -1,12 +1,12 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/visitor.dart';
 
-class Collector extends RecursiveElementVisitor<void> {
-  final List<ClassElement> _classElements = [];
+class ElementCollector extends RecursiveElementVisitor<void> {
+  final List<ClassElement> _classElements = const [];
 
   Iterable<ClassElement> get classElements => _classElements;
 
-  Collector();
+  const ElementCollector();
 
   @override
   void visitClassElement(ClassElement element) {
@@ -25,7 +25,7 @@ class Collector extends RecursiveElementVisitor<void> {
       }
     }
 
-    final collector = Collector();
+    final collector = ElementCollector();
     element.exportedLibrary?.accept(collector);
 
     bool shouldInclude(ClassElement element) => element.isPublic && !shownNames.contains(element.name);

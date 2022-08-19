@@ -4,23 +4,43 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:papiana/src/collector.dart';
-import 'package:papiana/src/util/build_path.dart';
+import 'package:papiana/src/models/exceptions.dart';
+import 'package:papiana/src/models/package_source.dart';
+import 'package:papiana/src/services/element_collector.dart';
+import 'package:papiana/src/util/path_util.dart';
 import 'package:path/path.dart' as p;
 
 class PackageAnalyzer {
-  final Collector collector = Collector();
-  final String packagePath;
-
+  final ElementCollector collector = ElementCollector();
   final Completer<Iterable<ClassElement>> _completer = Completer();
+  bool _isStarted = false;
 
-  PackageAnalyzer(this.packagePath);
+  final PackageSource packageSource;
+  final bool pub;
+
+  PackageAnalyzer(this.packageSource, {this.pub = true});
 
   Future<Iterable<ClassElement>> get results async {
+    if (!_isStarted) {
+      _isStarted = true;
+      analyze();
+    }
     return _completer.future;
   }
 
   Future<Iterable<ClassElement>> analyze() async {
+    String packagePath = await packageSource.packagePath;
+
+    if (pub) {
+      ProcessResult result = await Process.run(
+        'dart',
+        ['pub', 'get'],
+        workingDirectory: packagePath,
+        runInShell: true,
+      );
+
+      if (result.exitCode != 0) throw PubGetException();
+    }
 
     final contextCollection = AnalysisContextCollection(
       includedPaths: [
@@ -32,7 +52,7 @@ class PackageAnalyzer {
       buildPath(packagePath, 'lib'),
     ).listSync(recursive: false).where((file) => p.extension(file.path) == '.dart');
 
-    final collector = Collector();
+    final collector = ElementCollector();
 
     for (final file in dartFiles) {
       final filePath = buildPath(file.path);
