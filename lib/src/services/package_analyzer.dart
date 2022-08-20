@@ -29,6 +29,8 @@ class PackageAnalyzer {
   }
 
   Future<Iterable<ClassElement>> analyze() async {
+    if(_completer.isCompleted) return _completer.future;
+
     String packagePath = await packageSource.packagePath;
 
     if (pub) {
@@ -39,7 +41,7 @@ class PackageAnalyzer {
         runInShell: true,
       );
 
-      if (result.exitCode != 0) throw PubGetException();
+      if (result.exitCode != 0) throw PubGetException(result);
     }
 
     final contextCollection = AnalysisContextCollection(

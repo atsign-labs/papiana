@@ -7,6 +7,7 @@ import 'package:papiana/src/models/package_source.dart';
 import 'package:papiana/src/services/package_analyzer.dart';
 import 'package:papiana/src/services/public_api_analyzer.dart';
 import 'package:papiana/src/util/constants.dart';
+import 'package:papiana/src/util/print_conflicts.dart';
 
 const _name = 'analyze';
 const _description = 'Analyze the given packages';
@@ -34,7 +35,7 @@ class AnalyzeCommand extends Command<int> {
       name,
       abbr: abbr,
       mandatory: true,
-      help: 'The path / name of the $name package. (Required)',
+      help: 'The path / name of the $name package.',
     );
     argParser.addFlag(
       '$name-hosted',
@@ -53,7 +54,10 @@ class AnalyzeCommand extends Command<int> {
   }
 
   PackageSource _getPackageSource(String name) {
-    String package = argResults![name];
+    String? package = argResults![name];
+
+    if (package == null) throw UsageException('Missing required parameter: "$name".', usage);
+
     if (argResults!['$name-hosted'] ?? false) {
       return HostedPackageSource(
         package,
@@ -86,23 +90,9 @@ class AnalyzeCommand extends Command<int> {
 
     if (conflicts.isEmpty) {
       stdout.writeln('No conflicts detected!');
-      return 0;
+    } else {
+      printConflicts(conflicts);
     }
-
-    List<String> conflictLines = [];
-
-    for (var outer in conflicts) {
-      conflictLines.add('\t${outer.message}');
-
-      if (outer is ImplementationConflict) {
-        for (var inner in outer.conflicts) {
-          conflictLines.add('\t\t${inner.message}');
-        }
-      }
-    }
-
-    stdout.writeAll(conflictLines, '\n');
-    stdout.writeln();
 
     return 0;
   }

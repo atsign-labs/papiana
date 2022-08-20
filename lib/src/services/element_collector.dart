@@ -2,11 +2,11 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/visitor.dart';
 
 class ElementCollector extends RecursiveElementVisitor<void> {
-  final List<ClassElement> _classElements = const [];
+  final List<ClassElement> _classElements = [];
 
   Iterable<ClassElement> get classElements => _classElements;
 
-  const ElementCollector();
+  ElementCollector();
 
   @override
   void visitClassElement(ClassElement element) {

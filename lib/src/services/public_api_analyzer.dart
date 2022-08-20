@@ -29,6 +29,8 @@ class PublicApiAnalyzer {
   }
 
   Future<Iterable<Conflict>> analyze() async {
+    if (_completer.isCompleted) return _completer.future;
+
     List<Conflict> conflicts = [];
 
     for (ClassElement latestClass in source) {
@@ -36,9 +38,9 @@ class PublicApiAnalyzer {
 
       if (matchingClasses.length != 1) {
         if (matchingClasses.isEmpty) {
-          conflicts.add(MissingClassConflict(latestClass.name));
+          conflicts.add(MissingClassConflict(latestClass));
         } else {
-          conflicts.add(DuplicateClassConflict(latestClass.name, matchingClasses.length));
+          conflicts.add(DuplicateClassConflict(latestClass));
         }
         continue;
       }

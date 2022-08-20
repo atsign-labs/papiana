@@ -38,6 +38,8 @@ class HostedPackageSource implements PackageSource {
   }
 
   Future<String> _downloadPackage() async {
+    if(_completer.isCompleted) return _completer.future;
+
     String destination = await _getDownloadLocation();
 
     try {
