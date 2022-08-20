@@ -1,6 +1,5 @@
 import 'package:papiana/papiana.dart';
 import 'package:papiana/src/util/path_util.dart';
-import 'package:papiana/src/util/print_conflicts.dart';
 import 'package:test/test.dart';
 
 import 'test_util/test_directory.dart';
@@ -14,11 +13,5 @@ void main() {
 
     PublicApiAnalyzer analyzer = await PublicApiAnalyzer.fromPackageAnalyzers(source: source, target: target);
     conflicts = await analyzer.results;
-
-    //printConflicts(conflicts);
-  });
-
-  test('my test', () {
-    expect(true, true);
   });
 }
