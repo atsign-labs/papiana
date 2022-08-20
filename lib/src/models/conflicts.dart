@@ -7,16 +7,6 @@ abstract class Conflict {
 
 abstract class ClassConflict implements Conflict {}
 
-class MissingLibraryConflict implements ClassConflict {
-  @override
-  final ExecutableElement expected;
-
-  const MissingLibraryConflict(this.expected);
-
-  @override
-  String get message => 'No library was defined for the class "${expected.name}".';
-}
-
 class MissingClassConflict implements ClassConflict {
   @override
   final ClassElement expected;
